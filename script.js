@@ -1,5 +1,5 @@
 // 🌐 REPLACE WITH YOUR OPENWEATHERMAP API KEY
-const API_KEY = '42234a1bda133fc97f5de9650d39cd02';
+const API_KEY = 'YOUR_API_KEY';
 
 // DOM Elements
 const cityInput = document.getElementById('city-input');
