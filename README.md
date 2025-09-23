@@ -3,7 +3,7 @@
 > A beautiful, animated, and fully responsive weather web app built with **HTML, CSS, and JavaScript**.  
 > Features real-time forecasts, geolocation, dynamic backgrounds, floating clouds, cinematic animations, and PWA support!
 
-![Weather App Screenshot](C:\Users\user\Desktop)  
+![Weather App Screenshot](./screenshot-weather-app.png)  
 *(Replace this with your actual screenshot!)*
 
 ---
