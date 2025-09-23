@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🌤️ Dynamic Weather App</title>
+  <!-- Preload fonts - FIXED: removed extra spaces -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff6b6b">
+  <link rel="icon" type="image/png" href="icon-192.png">
+
+  <!-- iOS Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Weatherly">
+  <link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body class="weather-sunny">
+  <!-- Animated Clouds Background -->
+  <div class="clouds-container">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+    <div class="cloud cloud-5"></div>
+  </div>
+
+  <!-- Main App Container -->
+  <div class="container">
+    <header>
+      <div class="title-container">
+        <span class="icon">⛅</span>
+        <h1 class="animated-title">Your Weather, Beautifully</h1>
+      </div>
+      <p class="subtitle">Live forecasts with dynamic visuals</p>
+    </header>
+
+    <div class="search-section">
+      <input 
+        type="text" 
+        id="city-input" 
+        placeholder="Search city..." 
+        aria-label="Enter city name"
+        autocomplete="off"
+        onkeydown="if(event.key==='Enter') document.getElementById('search-btn').click();"
+      />
+      <div class="button-group">
+        <button id="search-btn" class="btn-primary" aria-label="Search weather">
+          🔍 Search
+        </button>
+        <button id="locate-btn" class="btn-secondary" aria-label="Use current location">
+          📍 My Location
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading hidden" role="status" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Fetching your weather...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="error hidden" role="alert" aria-live="assertive">
+      <p>⚠️ <span id="error-message">Something went wrong.</span></p>
+      <button id="retry-btn" class="btn-secondary">Try Again</button>
+    </div>
+
+    <!-- Current Weather Display -->
+    <div id="current-weather" class="current-weather hidden" aria-live="polite">
+      <h2 id="location" class="location">--</h2>
+      <div class="weather-display">
+        <img 
+          id="weather-icon" 
+          src="" 
+          alt="Weather condition icon" 
+          class="weather-icon" 
+          aria-hidden="false"
+          loading="lazy"
+        />
+        <div class="temp-details">
+          <p id="temperature" class="temp">--°</p>
+          <p id="description" class="desc">--</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hourly Forecast -->
+    <div id="hourly-forecast" class="forecast-section hidden" aria-live="polite">
+      <h3>⏰ Next 24 Hours</h3>
+      <div 
+        id="hourly-container" 
+        class="forecast-scroll" 
+        role="region" 
+        aria-label="Hourly weather forecast"
+      ></div>
+    </div>
+
+    <!-- Daily Forecast -->
+    <div id="daily-forecast" class="forecast-section hidden" aria-live="polite">
+      <h3>📅 7-Day Outlook</h3>
+      <div 
+        id="daily-container" 
+        class="forecast-scroll" 
+        role="region" 
+        aria-label="Daily weather forecast"
+      ></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <!-- Register Service Worker for Offline Support -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('✅ Service Worker Registered'))
+          .catch(err => console.log('❌ Service Worker Registration Failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
