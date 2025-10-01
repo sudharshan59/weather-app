@@ -4,7 +4,7 @@
 > Features real-time forecasts, geolocation, dynamic backgrounds, floating clouds, cinematic animations, and PWA support!
 
 ![Weather App Screenshot](./screenshot-weather-app.png)  
-*(Replace this with your actual screenshot!)*
+
 
 ---
 
