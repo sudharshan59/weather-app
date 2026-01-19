@@ -13,10 +13,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. DEBUG STEP (New)
-      # This prints the file list to the logs so you can see if Dockerfile is missing or named wrong.
-      - name: List Files (Debug)
-        run: ls -la
+      # 2. INJECT API KEY (The Magic Step)
+      # This replaces the placeholder in script.js with the real key from Secrets
+      - name: Inject API Key
+        run: |
+          # Use 'sed' to replace text. 
+          # Make sure 'script.js' matches your actual filename!
+          sed -i 's/REPLACE_MY_API_KEY/${{ secrets.WEATHER_API_KEY }}/g' script.js
 
       # 3. Login to Docker Hub
       - name: Login to Docker Hub
@@ -30,7 +33,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          # This forces it to look for "Dockerfile" specifically
-          file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/weather-app:latest
