@@ -2,10 +2,9 @@ pipeline {
     agent any
 
     environment {
-        // Your Docker Hub Image Name
+        // Your Docker Hub Image Name - verified as sudharshan01
         IMAGE_NAME = 'sudharshan01/weather-app'
-        // The ID of the credential you created in Jenkins
-        // IMPORTANT: Make sure this ID matches what you created!
+        // This MUST match the ID in Manage Jenkins > Credentials
         REGISTRY_CRED = 'docker-hub-login' 
     }
 
@@ -14,7 +13,6 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker Image...'
-                    // Build the image using the current build number
                     sh "docker build -t $IMAGE_NAME:$BUILD_NUMBER ."
                 }
             }
@@ -24,10 +22,12 @@ pipeline {
             steps {
                 script {
                     echo 'Pushing to Docker Hub...'
-                    // Login to Docker Hub using the credentials
+                    // This block securely retrieves your username and token
                     withCredentials([usernamePassword(credentialsId: REGISTRY_CRED, passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh "echo $PASS | docker login -u $USER --password-stdin"
+                        // Added backslashes to $PASS and $USER to fix the security warning and login issues
+                        sh "echo \$PASS | docker login -u \$USER --password-stdin"
                     }
+                    
                     // Push the numbered version
                     sh "docker push $IMAGE_NAME:$BUILD_NUMBER"
                     
