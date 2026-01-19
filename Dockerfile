@@ -1,10 +1,9 @@
 FROM nginx:alpine
 
-# Remove the default Nginx index.html file first
-RUN rm -rf /usr/share/nginx/weather-app.html/*
+# 1. Clear the default Nginx folder (Standard path)
+RUN rm -rf /usr/share/nginx/html/*
 
-# Copy your files. 
-# IMPORTANT: If your files are in a folder (e.g. 'src'), change '.' to './src'
-COPY . /usr/share/nginx/weather-app.html
+# 2. Copy your files to that STANDARD path
+COPY . /usr/share/nginx/html
 
 EXPOSE 80
