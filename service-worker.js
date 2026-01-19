@@ -1,27 +1,37 @@
-const CACHE_NAME = 'weather-app-v1';
-const urlsToCache = [
+const CACHE_NAME = 'weather-app-v2'; // Changed version to force update
+const ASSETS = [
   '/',
-  '/weather-app.html',
+  '/index.html',        // UPDATED: Was weather-app.html
   '/style.css',
   '/script.js',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/manifest.json'
+  // Removed icons for now to stop 404 errors until you upload them
 ];
 
-// Install SW, cache core files
-self.addEventListener('install', event => {
+// Install Event
+self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+      .then((cache) => cache.addAll(ASSETS))
   );
 });
 
-// Fetch from cache, fallback to network
-self.addEventListener('fetch', event => {
+// Fetch Event
+self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
-      .then(response => {
-        return response || fetch(event.request);
-      })
+      .then((response) => response || fetch(event.request))
+  );
+});
+
+// Activate Event (Clean up old caches)
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter((key) => key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      );
+    })
   );
 });
