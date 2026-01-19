@@ -1,0 +1,44 @@
+name: Production Build & Push
+
+on:
+  push:
+    branches: [ "main" ]
+
+# Grant permission to write to GitHub Container Registry
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 1. Log in to GitHub Container Registry (No secrets needed!)
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2. Set up Docker Buildx (Required for caching)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3. Build and Push with Caching
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          # Tags: "latest" for Render, "SHA" for History
+          tags: |
+            ghcr.io/sudharshan59/weather-app:latest
+            ghcr.io/sudharshan59/weather-app:${{ github.sha }}
+          # Caching: Re-uses layers from previous builds to save time
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
