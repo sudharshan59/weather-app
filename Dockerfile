@@ -1,9 +1,9 @@
 FROM nginx:alpine
 
-# 1. Clear the default Nginx folder (Standard path)
+# 1. Clear default Nginx files
 RUN rm -rf /usr/share/nginx/html/*
 
-# 2. Copy your files to that STANDARD path
+# 2. Copy your files
 COPY . /usr/share/nginx/html
 
 EXPOSE 80
