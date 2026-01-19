@@ -1,8 +1,10 @@
-# Use Nginx (Lightweight Web Server)
 FROM nginx:alpine
 
-# Copy your HTML files to the server
-COPY . /usr/share/nginx/html
+# Remove the default Nginx index.html file first
+RUN rm -rf /usr/share/nginx/weather-app.html/*
 
-# Open port 80
+# Copy your files. 
+# IMPORTANT: If your files are in a folder (e.g. 'src'), change '.' to './src'
+COPY . /usr/share/nginx/weather-app.html
+
 EXPOSE 80
