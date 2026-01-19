@@ -18,22 +18,44 @@ pipeline {
             }
         }
 
+        stage('Test Image') {
+            steps {
+                script {
+                    echo 'Running Testing Layer...'
+                    // Verifies the image internal structure before pushing
+                    sh "docker run --rm $IMAGE_NAME:$BUILD_NUMBER ls /usr/share/nginx/html/index.html"
+                }
+            }
+        }
+
         stage('Push to Hub') {
             steps {
                 script {
                     echo 'Pushing to Docker Hub...'
-                    // This block securely retrieves your username and token
                     withCredentials([usernamePassword(credentialsId: REGISTRY_CRED, passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        // Added backslashes to $PASS and $USER to fix the security warning and login issues
+                        // Secure login using backslash escaping for Jenkins
                         sh "echo \$PASS | docker login -u \$USER --password-stdin"
                     }
-                    
-                    // Push the numbered version
+                    // Push unique build number version
                     sh "docker push $IMAGE_NAME:$BUILD_NUMBER"
                     
-                    // Tag it as 'latest' and push that too
+                    // Push 'latest' version for deployment
                     sh "docker tag $IMAGE_NAME:$BUILD_NUMBER $IMAGE_NAME:latest"
                     sh "docker push $IMAGE_NAME:latest"
+                }
+            }
+        }
+
+        stage('Deploy Locally') {
+            steps {
+                script {
+                    echo 'Deploying Container Online...'
+                    // Clean up old containers to prevent port conflicts
+                    sh "docker stop weather-app-live || true"
+                    sh "docker rm weather-app-live || true"
+                    
+                    // Run the app live on port 8081
+                    sh "docker run -d --name weather-app-live -p 8081:80 $IMAGE_NAME:latest"
                 }
             }
         }
@@ -41,7 +63,7 @@ pipeline {
     
     post {
         always {
-            // Clean up space by deleting the image from the Jenkins server
+            // Remove local images to save space in GitHub Codespace
             sh "docker rmi $IMAGE_NAME:$BUILD_NUMBER || true"
             sh "docker rmi $IMAGE_NAME:latest || true"
         }
