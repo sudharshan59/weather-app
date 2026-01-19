@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Your Docker Hub Image Name
-        IMAGE_NAME = 'sudharshan59/weather-app'
+        IMAGE_NAME = 'sudharshan01/weather-app'
         // The ID of the credential you created in Jenkins
         // IMPORTANT: Make sure this ID matches what you created!
         REGISTRY_CRED = 'docker-hub-login' 
